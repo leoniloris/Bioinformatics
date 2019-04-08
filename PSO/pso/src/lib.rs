@@ -1,2 +1,2 @@
-pub mod cost_function;
+extern crate rand;
 pub mod pso;

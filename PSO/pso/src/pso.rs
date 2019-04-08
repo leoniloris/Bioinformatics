@@ -1,59 +1,83 @@
-extern crate rand;
-extern crate rayon;
-use rayon::prelude::*;
-use cost_function::Model;
+use std::ops;
 
-use rand::Rng;
+pub trait Particle {
+    type Pos: Copy + ops::Add<Output = Self::Pos> + ops::Sub<Output = Self::Pos> + ops::Mul<f64, Output = Self::Pos>;
+    type Eval: Copy + PartialOrd;
 
-#[derive(Debug)]
-pub struct StateVector {
-    velocity: f32,
-    position: f32,
-    local_best: f32,
-    global_best: &'static f32,
+    fn new_random() -> Self;
+    fn eval(&self) -> Self::Eval;
+
+    fn pos(&self) -> Self::Pos;
+    fn vel(&self) -> Self::Pos;
+    fn best(&self) -> (Self::Pos, Self::Eval);
+    fn pos_mut(&mut self) -> &mut Self::Pos;
+    fn vel_mut(&mut self) -> &mut Self::Pos;
+    fn best_mut(&mut self) -> &mut (Self::Pos, Self::Eval);
 }
 
-#[derive(Debug)]
-struct Particle (Vec<StateVector>);
-
-pub struct Swarm<m: Model> {
-    particles: Vec<Particle>,
-    model: m,
+pub struct PSO<T: Particle> {
+    particles: Vec<T>,
+    inetia: f64,
+    c_local: f64,
+    c_global: f64,
+    best: (T, T::Eval),
 }
 
-// impl Particle {
-//     fn new(n_dimensions: i32, min_bound: f32, max_bound: f32) -> Particle {
-//         let mut position = Vec::new();
-//         let mut velocity = Vec::new();
-//         let mut state_vector = Vec<StateVector>::new();
-//         let mut global_best = Vec::new();
+impl<T> PSO<T>
+    where T: Particle + Ord + Copy
+{
+    pub fn new(particles_num: usize, inetia: f64, c_local: f64, c_global: f64) -> Self {
+        let mut particles = Vec::with_capacity(particles_num);
+        for _ in 0..particles_num {
+            particles.push(T::new_random());
+        }
 
-//         for _ in 0..n_dimensions {
-//             let v = rand::thread_rng().gen_range(min_bound.abs(), -(max_bound - 1).abs());
-//             let p = rand::thread_rng().gen_range(min_bound.abs(), (max_bound - 1).abs());
+        let best = Self::calc_best(&particles);
 
-//             state_vector.push(StateVector {v, p, p, p});
-//         }
-//         Particle {state_vector.clone()}
-//     }
+        Self {
+            particles,
+            inetia,
+            c_local,
+            c_global,
+            best,
+        }
+    }
 
-//     fn update_velocity(&mut self, parent_best: &Vec<f32>) {
-//         let momentum = 1f32;
-//         let social_component = 1.25_f32;
-//         let cognitive_component = 1.5_f32;
-//         let g_rand: f32 = rand::thread_rng().gen();
-//         let p_rand: f32 = rand::thread_rng().gen();
+    fn calc_best(particles: &[T]) -> (T, T::Eval) {
+        let best = particles.iter().max().unwrap();
+        (*best, best.eval())
+    }
 
-//         arr.par_iter_mut().for_each(|state| {
-//             (momentum * *state.velocity) +
-//             (cognitive_component * p_rand * (state.best - state.pos)) +
-//             ((social_component * g_rand * ([i] - state.pos)));
-//         }
-//         *p -= 1);
-//         for i in 0..self.vel.len() {
-//             self.vel[i] = (momentum * self.vel[i]) +
-//                           (cognitive_component * p_rand * (self.best[i] - self.pos[i])) +
-//                           ((social_component * g_rand * (parent_best[i] - self.pos[i])));
-//         }
-//     }
-// }
+    pub fn update(&mut self) {
+        for p in &mut self.particles {
+            let new_pos = p.pos() + p.vel();
+            *p.pos_mut() = new_pos;
+        }
+
+        for mut p in &mut self.particles {
+            let new_vel = p.vel() * self.inetia +
+                          (p.best().0 - p.pos()) * self.c_local * Self::rand_01() +
+                          (self.best.0.pos() - p.pos()) * self.c_global * Self::rand_01();
+            *p.vel_mut() = new_vel;
+        }
+
+        for mut p in &mut self.particles {
+            let e = p.eval();
+            if e > p.best().1 {
+                *p.best_mut() = (p.pos(), e);
+            }
+        }
+
+        self.best = Self::calc_best(&self.particles);
+    }
+
+    pub fn best(&self) -> (T, T::Eval) {
+        self.best
+    }
+
+    fn rand_01() -> f64 {
+        use rand::{random, Closed01};
+
+        let Closed01(val) = random::<Closed01<_>>();
+        val
+    }
