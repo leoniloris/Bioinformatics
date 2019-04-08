@@ -6,3 +6,5 @@ edition = "2018"
 
 [dependencies]
 threadpool = "1.0"
+rand = "0.3"
+rayon = "1.0"
