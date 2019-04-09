@@ -12,11 +12,11 @@ def assert_dimension(method):
         return method(x, *args, **kwargs)
     return wrapper
 
-# @assert_dimension
+@assert_dimension
 def _rastrigin(x, a=10):
     return len(x) * a + sum(np.square(x)  - a * np.cos(2 * np.pi * x))
 
-# @assert_dimension
+@assert_dimension
 def _rosenbrock(x):
     s = 0
     for d in len(x):
@@ -24,7 +24,7 @@ def _rosenbrock(x):
             s += np.square(1 - x[d - 1]) + 100 * np.square(x[d] - np.square(x[d-1]))
     return s
 
-# @assert_dimension
+@assert_dimension
 def _ackley(x):
     return -20 * np.exp(-0.2 * np.sqrt(0.5 * np.sum(np.square(x)))) -\
         np.exp(0.5 * np.sum(np.cos(2 * np.pi * x))) + 20
