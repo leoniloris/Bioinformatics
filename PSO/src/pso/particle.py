@@ -17,7 +17,7 @@ class Particle:
         return self._error
 
     def update_velocity(self, global_best_position):
-        inertia = 0.9
+        inertia = 0.5
         cognitive_constant = 2
         social_constant = 2
 
@@ -33,9 +33,9 @@ class Particle:
         np.clip(self._position, min_position, max_position)
 
     def update_state(self, global_best_position, min_position=-100, max_position=100):
+        # log.info('Current velocity %s\nCurrent position %s' % (str(self._velocity), str(self._position)))
         self.update_velocity(global_best_position)
         self.update_position(min_position, max_position)
-        log.info('Current velocity %s\nCurrent position %s' % (str(self._velocity), str(self._position)))
         return 1
 
     @property
