@@ -42,7 +42,8 @@ class PSO:
         return particle.update_state(self._swarm_best_position, *self._cost_model.parameters_boundaries)
 
     def _evaluate_swarm_fitness(self):
-        _swarm_error = _process_pool.map(self._update_particle_fitness, self._swarm)
+        # _swarm_error = _process_pool.map(self._update_particle_fitness, self._swarm)
+        _swarm_error = list(map(self._update_particle_fitness, self._swarm))
         log.info(_swarm_error)
         _min_swarm_current_error = np.min(_swarm_error)
         if _min_swarm_current_error < self._swarm_best_error:
@@ -50,7 +51,8 @@ class PSO:
                 self._swarm[np.argmin(_swarm_error)].position, _min_swarm_current_error
 
     def _update_swarm_state(self):
-        _process_pool.map(self._update_particle_state, self._swarm)
+        # _process_pool.map(self._update_particle_state, self._swarm)
+        list(map(self._update_particle_state, self._swarm))
 
     def _get_swarm_cummulative_error(self):
         return reduce(lambda cummulated, particle: cummulated + particle.error, self._swarm, 0)
