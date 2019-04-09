@@ -1,7 +1,8 @@
+from multiprocessing.pool import ThreadPool
+from collections import defaultdict
 from pso.particle import Particle
 from functools import partial
 from functools import reduce
-from multiprocessing.pool import ThreadPool
 
 import logging as log
 import numpy as np
@@ -19,6 +20,7 @@ class PSO:
         self._swarm = [
             Particle(np.random.uniform(*cost_model.parameters_boundaries, size=cost_model.num_dimensions))
             for _ in range(num_particles)]
+        self._states = defaultdict(list)
 
     def optimize(self):
         current_iteration = -1
@@ -32,8 +34,10 @@ class PSO:
         while not _done():
             self._evaluate_swarm_fitness()
             self._update_swarm_state()
+            self._save_state()
 
         log.info('best position: %s\n error: %f' % (str(self._swarm_best_position), self._swarm_best_error))
+        return self._states.copy()
 
     def _update_particle_fitness(self, particle):
         return particle.update_fitness(self._cost_model.callable)
@@ -55,3 +59,7 @@ class PSO:
 
     def _get_swarm_cummulative_error(self):
         return reduce(lambda cummulated, particle: cummulated + particle.error, self._swarm, 0)
+
+    def _save_state(self):
+        self._states['cumulative_error'].append(self._get_swarm_cummulative_error())
+        self._states['particles_positions'].append([list(p.position) for p in self._swarm])

@@ -4,7 +4,7 @@ import numpy as np
 N_DIM = 2
 
 CostModel = namedtuple('CostModel', [
-    'callable', 'num_dimensions', 'parameters_boundaries'])
+    'callable', 'num_dimensions', 'parameters_boundaries', 'name'])
 
 def assert_dimension(method):
     def wrapper(x, *args, **kwargs):
@@ -29,6 +29,6 @@ def _ackley(x):
     return -20 * np.exp(-0.2 * np.sqrt(0.5 * np.sum(np.square(x)))) -\
         np.exp(0.5 * np.sum(np.cos(2 * np.pi * x))) + 20
 
-RastriginModel = CostModel(callable=_rastrigin, num_dimensions=N_DIM, parameters_boundaries=[-5.12, 5.12])
-RosenbrockModel = CostModel(callable=_rosenbrock, num_dimensions=N_DIM, parameters_boundaries=[-2.4, 2.4])
-AckleyModel = CostModel(callable=_ackley, num_dimensions=N_DIM, parameters_boundaries=[-2.4, 2.4])
+RastriginModel = CostModel(callable=_rastrigin, num_dimensions=N_DIM, parameters_boundaries=[-5.12, 5.12], name='RastriginModel')
+RosenbrockModel = CostModel(callable=_rosenbrock, num_dimensions=N_DIM, parameters_boundaries=[-2.4, 2.4], name='RosenbrockModel')
+AckleyModel = CostModel(callable=_ackley, num_dimensions=N_DIM, parameters_boundaries=[-2.4, 2.4], name='AckleyModel')
