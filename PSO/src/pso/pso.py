@@ -62,4 +62,7 @@ class PSO:
 
     def _save_state(self):
         self._states['cumulative_error'].append(self._get_swarm_cummulative_error())
-        self._states['particles_positions'].append([list(p.position) for p in self._swarm])
+        self._states['particles_positions'].append(
+            {particle_number: list(particle.position) \
+                for particle_number, particle in enumerate(self._swarm)}
+        )

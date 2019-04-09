@@ -17,12 +17,12 @@ class Particle:
         return self._error
 
     def update_velocity(self, global_best_position):
-        inertia = 0.5
-        cognitive_constant = 2
+        inertia = 0.3
+        cognitive_constant = 1
         social_constant = 2
 
-        r1 = np.random.uniform(size=self._n_dimensions)
-        r2 = np.random.uniform(size=self._n_dimensions)
+        r1 = 0.5 * (np.random.uniform(size=self._n_dimensions) + 1)
+        r2 = 0.5 * (np.random.uniform(size=self._n_dimensions) + 1)
 
         cognitive_velocity = cognitive_constant * r1 * (self._best_position - self._position)
         social_velocity = social_constant * r2 * (global_best_position - self._position)
@@ -36,7 +36,6 @@ class Particle:
         # log.info('Current velocity %s\nCurrent position %s' % (str(self._velocity), str(self._position)))
         self.update_velocity(global_best_position)
         self.update_position(min_position, max_position)
-        return 1
 
     @property
     def position(self):
