@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
+from tqdm import tqdm
+
 plot_limits = [0, 0, 0, 0]
 
 def _plot_background(cost_model):
@@ -29,15 +31,15 @@ def _update_particles(particles_positions, particle_axis):
         plt.axis(plot_limits)
     plt.pause(0.1)
 
-def _update_loss(cumulative_error, loss_axis):
+def _update_loss(cumulative_error, loss_axis, idx):
     plt.sca(loss_axis)
-    plt.plot(cumulative_error, '-')
-    plt.axis(plot_limits)
+    plt.plot(idx, cumulative_error, 'r*')
+    plt.grid()
 
 def _animate_particles(states, particle_axis, loss_axis, boundaries):
-    for idx in range(len(states)):
+    for idx in tqdm(range(len(states['particles_positions']))):
         _update_particles(states['particles_positions'][idx], particle_axis)
-        # _update_loss(states['cumulative_error'][idx], loss_axis)
+        _update_loss(states['cumulative_error'][idx], loss_axis, idx)
         plt.show()
 
 def plot_states(states, cost_model):

@@ -17,6 +17,6 @@ if __name__ == "__main__":
     cost_model = RastriginModel
     pso = PSO(
         cost_model,
-        num_particles=args.population, max_iter=1000, min_cummulative_error=1E-50)
+        num_particles=args.population, max_iter=1000, min_cummulative_error=1E-4)
     states = pso.optimize()
     if args.plot: plot_states(states, cost_model)
