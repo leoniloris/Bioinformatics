@@ -1,3 +1,7 @@
+## Requirements
+* python3
+* pip3
+
 ## Installing the module:
 ```python
 pip3 install -e .
