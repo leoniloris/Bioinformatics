@@ -5,9 +5,9 @@ class Particle:
     def __init__(self, inital_position):
         self._min_error = np.Inf
         self._n_dimensions = len(inital_position)
+        self._error = np.Inf
         self._position = inital_position.copy()
         self._velocity = np.random.uniform(-1.0, 1.0, size=len(inital_position))
-        self._error = np.Inf
         self._best_position = np.zeros_like(self._position)
 
     def update_fitness(self, cost_func):

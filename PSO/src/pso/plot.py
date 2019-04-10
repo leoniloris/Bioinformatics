@@ -15,7 +15,7 @@ def _plot_background(cost_model):
     X, Y = np.meshgrid(x, x)
 
     arr = np.array([
-            [cost_model.callable(np.array( [X[row, col], Y[row, col]])) for col in range(n_rows)]
+            [cost_model.callable(np.array([X[row, col], Y[row, col]])) for col in range(n_rows)]
             for row in range(n_rows)
         ])
     plot_limits = [x[0], x[-1], x[0], x[-1]]
