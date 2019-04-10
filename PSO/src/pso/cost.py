@@ -19,7 +19,7 @@ def _rastrigin(x, a=10):
 @assert_dimension
 def _rosenbrock(x):
     s = 0
-    for d in len(x):
+    for d in range(len(x)):
         if not d % 2 == 0:
             s += np.square(1 - x[d - 1]) + 100 * np.square(x[d] - np.square(x[d-1]))
     return s

@@ -17,9 +17,9 @@ class Particle:
         return self._error
 
     def update_velocity(self, global_best_position):
-        inertia = 0.3
-        cognitive_constant = 1
-        social_constant = 2
+        inertia = 0.9
+        cognitive_constant = 2
+        social_constant = 1
 
         r1 = 0.5 * (np.random.uniform(size=self._n_dimensions) + 1)
         r2 = 0.5 * (np.random.uniform(size=self._n_dimensions) + 1)

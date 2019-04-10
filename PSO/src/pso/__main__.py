@@ -1,4 +1,4 @@
-from pso.cost import RastriginModel
+from pso.cost import RastriginModel, RosenbrockModel, AckleyModel
 from pso.plot import plot_states
 from pso.pso import PSO
 import logging as log
@@ -14,7 +14,7 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     log.basicConfig(level=log.INFO)
-    cost_model = RastriginModel
+    cost_model = AckleyModel
     pso = PSO(
         cost_model,
         num_particles=args.population, max_iter=1000, min_cummulative_error=1E-4)
