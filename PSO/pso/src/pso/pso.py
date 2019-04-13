@@ -1,6 +1,6 @@
 from multiprocessing.pool import ThreadPool
 from collections import defaultdict
-from .particle import Particle
+from particle import Particle
 from functools import partial
 from functools import reduce
 
