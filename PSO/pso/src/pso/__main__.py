@@ -1,6 +1,6 @@
-from pso.cost import RastriginModel, RosenbrockModel, AckleyModel
-from pso.plot import plot_states
-from pso.pso import PSO
+from cost import RastriginModel, RosenbrockModel, AckleyModel
+from plot import plot_states
+from pso import PSO
 import logging as log
 import argparse
 
