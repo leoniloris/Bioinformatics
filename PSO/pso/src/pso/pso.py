@@ -8,7 +8,7 @@ import logging as log
 import numpy as np
 
 
-_pool = ThreadPool(16)
+# _pool = ThreadPool(16)
 
 class PSO:
     def __init__(self, cost_model, num_particles, max_iter, min_cummulative_error):
@@ -29,7 +29,7 @@ class PSO:
             current_iteration += 1
             return any(
                 (current_iteration >= self._max_iter,
-                 self._get_swarm_cummulative_error() < self._min_cummulative_error))
+                 abs(self._get_swarm_cummulative_error()) < self._min_cummulative_error))
 
         while not _done():
             self._evaluate_swarm_fitness()

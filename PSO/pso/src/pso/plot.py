@@ -7,6 +7,7 @@ from tqdm import tqdm
 plot_limits = [0, 0, 0, 0]
 
 def _plot_background(cost_model):
+    assert cost_model.num_dimensions > 1
     global plot_limits
     _, axs = plt.subplots(2, 1, figsize=(7, 14))
 
@@ -14,10 +15,13 @@ def _plot_background(cost_model):
     x = np.linspace(*cost_model.parameters_boundaries, num=n_rows)
     X, Y = np.meshgrid(x, x)
 
+    remaining_dimentions = [np.random.uniform(*cost_model.parameters_boundaries) for _ in range(cost_model.num_dimensions - 2)]
+
     arr = np.array([
-            [cost_model.callable(np.array([X[row, col], Y[row, col]])) for col in range(n_rows)]
+            [cost_model.callable(np.array([X[row, col], Y[row, col], *remaining_dimentions])) for col in range(n_rows)]
             for row in range(n_rows)
         ])
+
     plot_limits = [x[0], x[-1], x[0], x[-1]]
     axs[0].imshow(arr, extent=plot_limits)
 
@@ -38,6 +42,7 @@ def _update_loss(cumulative_error, loss_axis, idx):
 
 def _animate_particles(states, particle_axis, loss_axis, boundaries):
     for idx in tqdm(range(len(states['particles_positions']))):
+        print(idx)
         _update_particles(states['particles_positions'][idx], particle_axis)
         _update_loss(states['cumulative_error'][idx], loss_axis, idx)
         plt.show()

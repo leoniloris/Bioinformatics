@@ -17,6 +17,6 @@ if __name__ == "__main__":
     cost_model = AckleyModel
     pso = PSO(
         cost_model,
-        num_particles=args.population, max_iter=1000, min_cummulative_error=1E-4)
+        num_particles=args.population, max_iter=500, min_cummulative_error=1E-2)
     states = pso.optimize()
     if args.plot: plot_states(states, cost_model)
